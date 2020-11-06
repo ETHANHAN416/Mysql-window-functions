@@ -1,0 +1,24 @@
+Goal:
+We have two tables. One table has all mobile actions, i.e. all pages visited by the users on mobile. 
+The other table has all web actions, i.e. all pages visited on web by the users.
+Write a query that returns the percentage of users who only visited mobile, only web and both.
+That is, the percentage of users who are only in the mobile table, only in the web table and inboth tables. 
+The sum of the percentages should return 1.
+
+
+My code:
+select sum(if(m>0 and w>0 ,1,0) )/count(distinct user_id) as bb, sum(if(m>0 and w=0, 1, 0))/count(distinct user_id) as m_only, sum(if(m=0 and w>0, 1, 0))/count(distinct user_id) as w_only
+from 
+(
+	SELECT user_id, count(distinct m_page) as m, count(distinct w_page) as w
+	from (
+	select user_id, query_two_mobile.page as m_page, query_two_web.page as w_page
+	from query_two_mobile
+	left join query_two_web using (user_id)
+	union 
+	select user_id, query_two_mobile.page as m_page, query_two_web.page as w_page
+	from query_two_mobile
+	right join query_two_web using (user_id)
+	) t
+	group by user_id
+)tmp
