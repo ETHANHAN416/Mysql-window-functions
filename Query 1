@@ -1,0 +1,29 @@
+Goal:
+For each user_id, find the difference between the last action and the second last action. 
+Action here is defined as visiting a page. 
+If the user has just one action, you can either remove her from the final results or keep that user_id and have NULL as time difference between the two actions. 
+The table shows for each user all the pages she visited and the corresponding
+timestamp.
+
+My code:
+SELECT T2.user_id, fir - sec as diff
+FROM( 
+	SELECT user_id, UNIX_TIMESTAMP as sec 
+	From 
+	 (
+		SELECT user_id, UNIX_TIMESTAMP, rank()over(partition by user_id order by UNIX_TIMESTAMP desc) as rk 
+		From query_one
+	)AAA
+	where rk=2
+) T1
+RIGHT JOIN 
+(
+	SELECT user_id, UNIX_TIMESTAMP as fir 
+	From 
+	 (
+		SELECT user_id, UNIX_TIMESTAMP, rank()over(partition by user_id order by UNIX_TIMESTAMP desc) as rk 
+		From query_one
+	)AAA
+	where rk=1
+) T2 USING (user_id)
+ORDER BY T2.user_id
