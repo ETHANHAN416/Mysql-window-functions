@@ -1,0 +1,27 @@
+Goal:
+We have a table with users, their country and when they created the account. We want to find:
+The country with the largest and smallest number of users
+A query that returns for each country the first and the last user who signed up (if that
+country has just one user, it should just return that single user)
+
+
+My code:
+1. 
+SELECT country, ct
+FROM(
+	SELECT T.*, DENSE_RANK()OVER(order by ct)as rk, DENSE_RANK()OVER(order by ct DESC)as rk_DESC
+	FROM(
+		SELECT country, count(user_id) AS ct
+		FROM query_six
+		GROUP BY country
+	)T
+)TT 
+WHERE RK=1 OR RK_DESC=1
+
+2.
+SELECT user_id, country, created_at
+FROM(
+	SELECT user_id, country, created_at, RANK()over(PARTITION by country order by created_at) as r1,  RANK()over(PARTITION by country order by created_at DESC) as r2
+	From query_six
+)T 
+WHERE r1=1 or r2 =1
