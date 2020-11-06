@@ -1,0 +1,24 @@
+Goal:
+We have two tables. One table has all $ transactions from users during the month of March and one for the month of April.
+Write a query that returns the total amount of money spent by each user. That is, the sum of the column transaction_amount for each user over both tables.
+Write a query that returns day by day the cumulative sum of money spent by each user. 
+That is, each day a user had a transcation, we should have how much money she has spent in total until that day. 
+Obviously, the last day cumulative sum should match the numbers from the previous bullet point.
+
+My code:
+SELECT user_id, date, SUM(amount) over(PARTITION BY user_id ORDER BY date) as total_amount
+FROM(
+	SELECT user_id, date, sum(amount) as amount
+	FROM
+	(
+		SELECT user_id, date, transaction_amount as amount
+		FROM query_four_march
+		UNION ALL
+		SELECT user_id, date, transaction_amount as amount
+		FROM query_four_april
+		ORDER BY user_id, date
+	) tmp
+	GROUP BY user_id, date
+	ORDER BY user_id, date
+)TTT
+
