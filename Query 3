@@ -13,18 +13,3 @@ FROM(
 where rk = 10
 order by user_id
 
-4.(1)
-SELECT user_id, sum(transaction_amount) as total 
-FROM( 
-	SELECT user_id, date, transaction_amount
-	FROM(
-		SELECT user_id, date, transaction_amount
-		From query_four_april
-		union all
-		SELECT user_id, date, transaction_amount
-		From query_four_march
-	) T
-	order by user_id, date
-)TMP 
-GROUP BY user_id
-ORDER BY user_id
