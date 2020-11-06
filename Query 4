@@ -6,6 +6,23 @@ That is, each day a user had a transcation, we should have how much money she ha
 Obviously, the last day cumulative sum should match the numbers from the previous bullet point.
 
 My code:
+1.
+SELECT user_id, sum(transaction_amount) as total 
+FROM( 
+	SELECT user_id, date, transaction_amount
+	FROM(
+		SELECT user_id, date, transaction_amount
+		From query_four_april
+		union all
+		SELECT user_id, date, transaction_amount
+		From query_four_march
+	) T
+	order by user_id, date
+)TMP 
+GROUP BY user_id
+ORDER BY user_id
+
+2.
 SELECT user_id, date, SUM(amount) over(PARTITION BY user_id ORDER BY date) as total_amount
 FROM(
 	SELECT user_id, date, sum(amount) as amount
