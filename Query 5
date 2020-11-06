@@ -1,0 +1,28 @@
+Goal
+We have two tables. 
+One is user id and their signup date. 
+The other one shows all transactions done by those users, when the transaction happens and its corresponding dollar amount.
+Find the average and median transaction amount only considering those transactions that happen on the same date as that user signed-up.
+
+MY code:
+1.
+SELECT AVG(AMOUNT) AS MED 
+FROM(	
+	SELECT AMOUNT, FREQ, @SUM AS S1, @SUM:=@SUM+FREQ AS S2, TOTAL
+	FROM(
+		SELECT T.transaction_amount AS AMOUNT, COUNT(T.transaction_amount) AS FREQ 
+		From query_five_users U
+		LEFT JOIN query_five_transactions T ON T.user_id = U.user_id AND DATE_FORMAT(T.transaction_date,'%Y-%m-%d') = U.sign_up_date
+		GROUP BY T.transaction_amount
+		ORDER BY T.transaction_amount
+	)T1, (SELECT @SUM:=0)AS T2, (
+		SELECT COUNT(T.transaction_amount) AS TOTAL 
+		FROM query_five_users U
+		LEFT JOIN query_five_transactions T ON T.user_id = U.user_id AND DATE_FORMAT(T.transaction_date,'%Y-%m-%d') = U.sign_up_date)T3
+)TMP 
+WHERE S1<=TOTAL/2 AND S2>=TOTAL/2
+
+2.
+SELECT avg(T.transaction_amount) as avg
+From query_five_users U
+LEFT JOIN query_five_transactions T ON T.user_id = U.user_id AND DATE_FORMAT(T.transaction_date,'%Y-%m-%d') = U.sign_up_date
