@@ -1,0 +1,30 @@
+Goal:
+We define as power users those users who bought at least 10 products. 
+Write a query that returns for each user on which day they became a power user. 
+That is, for each user, on which day they bought the 10th item. The table below represents transactions. 
+That is, each row means that the corresponding user has bought something on that date.
+
+My code:
+SELECT user_id, date 
+FROM(
+	SELECT user_id, date, RANK()OVER(PARTITION BY user_id ORDER BY date asc) as rk 
+	FROM query_three
+)T
+where rk = 10
+order by user_id
+
+4.(1)
+SELECT user_id, sum(transaction_amount) as total 
+FROM( 
+	SELECT user_id, date, transaction_amount
+	FROM(
+		SELECT user_id, date, transaction_amount
+		From query_four_april
+		union all
+		SELECT user_id, date, transaction_amount
+		From query_four_march
+	) T
+	order by user_id, date
+)TMP 
+GROUP BY user_id
+ORDER BY user_id
