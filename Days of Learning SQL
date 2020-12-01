@@ -2,7 +2,7 @@ question:
 https://www.hackerrank.com/challenges/15-days-of-learning-sql/problem
 Days of Learning SQL:
 
-my code:
+my code(Oracle):
 select t1.submission_date, t1.cont_ct, t2.hacker_id, t2.name
 from(
     select submission_date, count(*) as cont_ct
